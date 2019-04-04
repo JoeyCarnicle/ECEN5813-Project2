@@ -6,6 +6,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "CUnit/Basic.h"
 #include "CUnit/CUnit.h"
@@ -15,7 +16,7 @@
 static FILE* temp_file = NULL;
 
 /*global variable declarations*/
-ring_t *ring;
+ring_t *ring = NULL;
 char data = 0x02;
 
 /* The suite initialization function.
@@ -68,7 +69,7 @@ void test_insert(void)
 void test_remove(void)
 {
     /* check for failure return code */
-    CU_ASSERT_FALSE(r_remove(ring, &data);
+    CU_ASSERT_FALSE(r_remove(ring, &data));
     /* verify data copied from buffer */
     CU_ASSERT(ring->Buffer[ring->Outi - 1] == data);
      
@@ -82,8 +83,6 @@ void edge_cases(void)
     }
     CU_ASSERT(insert(ring, data) == -1);
 
-    free(ring);
-    CU_ASSERT(r_remove(ring, &data) == -1);
 }
 
 /* The main() function for setting up and running the tests.
@@ -106,7 +105,8 @@ int main()
    }
 
    /* add the tests to the suite */
-   if ((NULL == CU_add_test(pSuite, "test of insert()", test_insert)) ||
+   if ((NULL == CU_add_test(pSuite, "test of init()", test_init)) ||
+       (NULL == CU_add_test(pSuite, "test of insert()", test_insert)) ||
        (NULL == CU_add_test(pSuite, "test of r_remove()", test_remove)) ||
        (NULL == CU_add_test(pSuite, "test edge cases", edge_cases)))
    {

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "ring.h"
 
-int main()
+/*int main()
 {
     char data = 0x02;
     ring_t *ring = NULL;
@@ -30,7 +30,7 @@ int main()
     
     
     return 0;
-}
+}*/
 
 ring_t *init( int length )
 {
@@ -77,7 +77,7 @@ int r_remove( ring_t *ring, char *data )
     else
     {
         *data = ring->Buffer[ring->Outi];
-        ring->Outi = ring->Outi++ & ring->Length;
+        ring->Outi = (ring->Outi+1) % ring->Length;
         printf("\ndata removed = %d", *data);
     }
     

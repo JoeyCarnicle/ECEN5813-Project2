@@ -1,9 +1,12 @@
 objects = ring.o
 
+execs = exec test
+
 #flag: 
 # -g = debugging
 #-wall = enable all warnings
 CFLAGS = -g -Wall 
+CUNIT_FLAGS = -lcunit
 
 exec : $(objects)
 	gcc $(CFLAGS) -o exec $(objects)
@@ -16,4 +19,7 @@ ring.o : ring.c ring.h
 #
 	
 clean : 
-	rm exec *.o
+	rm $(execs) *.o
+
+test : $(objects) ring_test.o
+	gcc $(CFLAGS) $(CUNIT_FLAGS) -o test $(objects) ring_test.o
