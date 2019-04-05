@@ -65,3 +65,37 @@ int main(void) {
     }
     return 0 ;
 }
+
+void uart_init()
+{
+	SIM->SCGC4 |= SIM_SCGC4_UART0(1);
+	SIM->SCGC5 |= SIM_SCGC5_PORTA(1);
+	SIM->SOPT2 |= SIM_SOPT2_UART0SRC(01);
+
+	PortA->PCR[1] |= PORT_PCR_MUX(010); //RX
+	PortA->PCR[2] |= PORT_PCR_MUX(010);	//TX
+
+	UART0->C2 |= UART_C2_TE(0);
+	UART0->C2 |= UART_C2_RE(0);
+	UART0->BDH |= 0x00;
+	UART0->BDL |= 12;
+	UART0->C2 |= UART_C2_TE(1);
+	UART0->C2 |= UART_C2_RE(1);
+	UART0->S1 |= 0;
+}
+
+void uart_transmit(char input)
+{
+	while(!(UART0->S1 & UART_S1_TC_MASK)){}
+	UART0->D = input;
+}
+
+char uart_receive()
+{
+	char out;
+	if ((UART0->S1 & UART_S1_RDRF_MASK)==1)
+	{
+		out = UART0->D;
+	}
+	return out;
+}
