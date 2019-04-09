@@ -55,11 +55,11 @@ int insert( ring_t *ring, char data )
         ring->Buffer[ring->Ini] = data;
         ring->Ini = iniPlus;
         ret = 0;
-        printf("\nIni = %d, data = %d", ring->Ini, ring->Buffer[ring->Ini - 1]);
+        //printf("\nIni = %d, data = %d", ring->Ini, ring->Buffer[ring->Ini - 1]);
     }
     else 
     {
-        printf("\nBuffer is full");
+        //printf("\nBuffer is full");
     }
     
     return ret;
@@ -78,7 +78,7 @@ int r_remove( ring_t *ring, char *data )
     {
         *data = ring->Buffer[ring->Outi];
         ring->Outi = (ring->Outi+1) % ring->Length;
-        printf("\ndata removed = %d", *data);
+        //printf("\ndata removed = %d", *data);
     }
     
     return ret;
@@ -91,11 +91,11 @@ void entries( ring_t *ring )
     if (ring->Ini >= ring->Outi)
     {
         number = ring->Ini - ring->Outi;
-        printf("\nNumber of chars in buffer = %d", number);
+        //printf("\nNumber of chars in buffer = %d", number);
     }
     else
     {
         number = (ring->Ini + ring->Length) - ring->Outi;
-        printf("\nNumber of chars in buffer = %d", number);
+        //printf("\nNumber of chars in buffer = %d", number);
     }
 }
