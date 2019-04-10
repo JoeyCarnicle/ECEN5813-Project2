@@ -44,11 +44,15 @@
 #include "fsl_common.h"
 #include "ring.h"
 
-//#define Polling 0
+//#define Polling
 
 /* TODO: insert other definitions and declarations here. */
 void uart_init();
+void placechar(char data);
+int uart_transmit_ready(void);
 void uart_transmit(char input);
+char receivechar(void);
+int uart_receive_ready();
 char uart_receive();
 int BaudCalc();
 
@@ -74,17 +78,10 @@ int main(void) {
 
     while(1) {
 #ifdef Polling
-    	data = uart_receive();
-    	uart_transmit(data);
+    	data = receivechar();
+    	placechar(data);
 #else
-       	/*if (readIRQ_Flag == 1){
-    	insert(ring, data);
-    	readIRQ_Flag = 0;
-    	}
-       	if (ring->Ini != ring->Outi){
-       	r_remove(ring, &data);
-       	uart_transmit(data);
-       	}*/
+
 #endif
 
     }
@@ -117,15 +114,48 @@ void uart_init()
 
 }
 
+void placechar(char data)
+{
+	int ret = -1;
+	ret = uart_transmit_ready();
+	if (ret == 0){
+		uart_transmit(data);
+	}
+}
+
+char receivechar()
+{
+	int ret = -1;
+	ret = uart_receive_ready();
+	if (ret == 0){
+		return (uart_receive());
+	}
+	return ret;
+}
+
+int uart_transmit_ready(void)
+{
+	int ret = -1;
+	while(!(UART0->S1 & UART_S1_TC_MASK) && !(UART0->S1 & UART_S1_TDRE_MASK)){}
+	ret = 0;
+	return ret;
+}
+
 void uart_transmit(char input)
 {
-	while(!(UART0->S1 & UART_S1_TC_MASK) && !(UART0->S1 & UART_S1_TDRE_MASK)){}
 	UART0->D = input;
+}
+
+int uart_receive_ready()
+{
+	int ret = -1;
+	while (!(UART0->S1 & UART_S1_RDRF_MASK)){}
+	ret = 0;
+	return ret;
 }
 
 char uart_receive()
 {
-	while (!(UART0->S1 & UART_S1_RDRF_MASK)){}
 	return UART0->D;
 }
 
@@ -141,7 +171,7 @@ void UART0_IRQHandler()
 	DisableIRQ(UART0_IRQn);
 
 	if(UART0->S1 & UART_S1_RDRF_MASK){
-		data = UART0->D;
+		data = receivechar();
 		insert(ring, data);
 	}
 	else if (UART0->S1 & UART_S1_TDRE_MASK){

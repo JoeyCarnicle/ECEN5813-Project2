@@ -8,30 +8,6 @@
 #include <stdlib.h>
 #include "ring.h"
 
-/*int main()
-{
-    char data = 0x02;
-    ring_t *ring = NULL;
-    int ret = 0;
-    
-    ret = r_remove(ring, &data);
-    if(ret == -1) printf("\nremove failed");
-    ring = init(3);
-    printf("\nAddress of ring = %x", ring);
-    ret = insert(ring, data);
-    if(ret == -1) printf("\ninsert failed");
-    ret = insert(ring, data);
-    if(ret == -1) printf("\ninsert failed");
-    entries(ring);
-    ret = r_remove(ring, &data);
-    if(ret == -1) printf("\nremove failed");
-    ret = insert(ring, data);
-    if(ret == -1) printf("\ninsert failed");
-    
-    
-    return 0;
-}*/
-
 ring_t *init( int length )
 {
     ring_t *ring = malloc(sizeof(char)*length);
