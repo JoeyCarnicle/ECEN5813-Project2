@@ -80,11 +80,11 @@ int main(void) {
        	/*if (readIRQ_Flag == 1){
     	insert(ring, data);
     	readIRQ_Flag = 0;
-    	}*/
+    	}
        	if (ring->Ini != ring->Outi){
        	r_remove(ring, &data);
        	uart_transmit(data);
-       	}
+       	}*/
 #endif
 
     }
@@ -110,6 +110,7 @@ void uart_init()
 	UART0->C2 |= UART0_C2_TE(1);
 	UART0->C2 |= UART0_C2_RE(1);
 	UART0->C2 |= UART0_C2_RIE(1);
+	UART0->C2 |= UART0_C2_TIE(1);
 	NVIC_EnableIRQ(UART0_IRQn);
 #endif
 	UART0->S1 = 0;
@@ -138,8 +139,21 @@ int BaudCalc()
 void UART0_IRQHandler()
 {
 	DisableIRQ(UART0_IRQn);
-	data = UART0->D;
-	insert(ring, data);
+
+	if(UART0->S1 & UART_S1_RDRF_MASK){
+		data = UART0->D;
+		insert(ring, data);
+	}
+	else if (UART0->S1 & UART_S1_TDRE_MASK){
+		if (ring->Ini != ring->Outi){
+		       	r_remove(ring, &data);
+		       	uart_transmit(data);
+		       	}
+	}
 	EnableIRQ(UART0_IRQn);
 
 }
+
+
+
+
