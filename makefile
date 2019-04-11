@@ -1,6 +1,6 @@
 objects = ring.o
 
-execs = exec test
+execs = exec unittest
 
 #flag: 
 # -g = debugging
@@ -21,5 +21,5 @@ ring.o : ring.c ring.h
 clean : 
 	rm $(execs) *.o
 
-test : $(objects) ring_test.o
-	gcc $(CFLAGS) $(CUNIT_FLAGS) -o test $(objects) ring_test.o
+unittest : $(objects) ring_test.o
+	gcc $(CFLAGS) $(CUNIT_FLAGS) -o unittest $(objects) ring_test.o

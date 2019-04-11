@@ -48,40 +48,77 @@ int clean_suite1(void)
    }
 }
 
+/* Test all functions with uninitialized ring buffer for failure
+*  Test init function returns a valid pointer address 
+*  Test resize function returns a valid pointer address
+*/
 void test_init(void)
 {
-    ring = init(10);
+    int ret = 0;
+    /* test null pointers for each test */
+    ret = insert(ring, data);
+    CU_ASSERT_EQUAL(-1,ret);
+    ret = r_remove(ring, &data);
+    CU_ASSERT_EQUAL(-1,ret);
+    ret = entries(ring);
+    CU_ASSERT_EQUAL(-1,ret);
+
+    init(3);
     /* verify ring initialized */
     CU_ASSERT_PTR_NOT_NULL(ring);
     /* verify buffer pointer initialized */
     CU_ASSERT_PTR_NOT_NULL(ring->Buffer);
+
+    resize(10);
+    /* verify ring initialized */
+    CU_ASSERT_PTR_NOT_NULL(ring);
+    /* verify buffer pointer initialized */
+    CU_ASSERT_PTR_NOT_NULL(ring->Buffer);
+    /* Verify length changed to 10 */
+    CU_ASSERT(ring->Length == 10);
     
 }
 
 void test_insert(void)
 {
+    int ret = 0;
     /* check for failure return code */
-    CU_ASSERT_FALSE(insert(ring, data));
+    ret = insert(ring, data);
+    CU_ASSERT_FALSE(ret);
     /* verify that data copied into buffer */
     CU_ASSERT(ring->Buffer[ring->Ini - 1] == data);
 }
 
 void test_remove(void)
 {
+    int ret = 0;
+    char datalcl = 0;
     /* check for failure return code */
-    CU_ASSERT_FALSE(r_remove(ring, &data));
+    ret = r_remove(ring, &datalcl);
+    CU_ASSERT_FALSE(ret);
     /* verify data copied from buffer */
-    CU_ASSERT(ring->Buffer[ring->Outi - 1] == data);
+    CU_ASSERT(datalcl == data);
      
 }
 
+/* Test cases: insert to fill the buffer should not return any error
+* the last insert (outside of the for loop) should return a -1 for a full buffer
+* remove all information in the buffer should not return any errors
+* the last remove (outside of the for loop) should return a -1 for no data in the buffer
+*/
 void edge_cases(void) 
 {
     for (int i = 0; i < 9; i++)
     {
-	insert(ring, data);
+	CU_ASSERT_FALSE(insert(ring, data));
     }
     CU_ASSERT(insert(ring, data) == -1);
+
+    for (int i = 0; i < 9; i++)
+    {
+	CU_ASSERT_FALSE(r_remove(ring, &data));
+    }
+    CU_ASSERT(r_remove(ring, &data) == -1);
 
 }
 
