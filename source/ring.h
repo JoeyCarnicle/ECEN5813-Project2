@@ -17,6 +17,6 @@ typedef struct{
 ring_t *init( int length );
 int insert( ring_t *ring, char data );
 int r_remove( ring_t *ring, char *data );
-void entries( ring_t *ring );
+int entries( ring_t *ring );
 
 #endif

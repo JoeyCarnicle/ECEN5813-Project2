@@ -60,7 +60,7 @@ int r_remove( ring_t *ring, char *data )
     return ret;
 }
 
-void entries( ring_t *ring )
+int entries( ring_t *ring )
 {
     int number = 0;
     
@@ -68,10 +68,12 @@ void entries( ring_t *ring )
     {
         number = ring->Ini - ring->Outi;
         //printf("\nNumber of chars in buffer = %d", number);
+        return number;
     }
     else
     {
         number = (ring->Ini + ring->Length) - ring->Outi;
         //printf("\nNumber of chars in buffer = %d", number);
+        return number;
     }
 }
